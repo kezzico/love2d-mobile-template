@@ -1,6 +1,7 @@
 local Clickable = require 'app.gui.clickable'
 local TextView = require 'app.gui.text_view'
-function PrimaryButton(title, onclick)
+
+local function PrimaryButton(title, onclick)
   return Clickable(onclick, {
     View({ 
       padding = 20, 
@@ -10,7 +11,7 @@ function PrimaryButton(title, onclick)
   })
 end
 
-function SecondaryButton(title, onclick)
+local function SecondaryButton(title, onclick)
   return Clickable(onclick, {
     View({ 
       padding = 20, 
@@ -20,7 +21,7 @@ function SecondaryButton(title, onclick)
   })
 end
 
-function BackButton()
+local function BackButton()
 	local go_back = function() navigator:pop()  end
 
 	return Clickable(go_back, { 
@@ -28,7 +29,7 @@ function BackButton()
 	})
 end
 
-function CloseButton()
+local function CloseButton()
 	local reset = function() navigator:reset()  end
 
 	return Clickable(reset, { 
@@ -36,7 +37,7 @@ function CloseButton()
 	})
 end
 
-function PlusButton(onclick)
+local function PlusButton(onclick)
 	return Clickable(onclick, { 
 		TextView("+", { size = 15, color = hexToColor(0xFFFFFF) })
 	})
