@@ -91,8 +91,11 @@ fi
   -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD" \
   --rerun-tasks
 
+  # Check if app is installed before uninstalling
+if adb shell pm list packages | grep -q "^package:$ANDROID_APP_ID$"; then
+  adb uninstall $ANDROID_APP_ID
+fi
 
-adb uninstall $ANDROID_APP_ID
 
 adb -s $(adb devices | grep -v attached | head -1 | awk '{print $1}') install -r app/build/outputs/apk/embedNoRecord/release/app-embed-noRecord-release.apk
 
