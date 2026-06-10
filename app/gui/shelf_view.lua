@@ -1,16 +1,5 @@
-local function eval_units(value_plus_unit, relative_to)
-  local r = value_plus_unit
-
-  if type(r) == "string" and r:sub(-1) == "%" then
-    r = tonumber(r:sub(1, -2)) * relative_to / 100
-  elseif type(r) == "string" and r:sub(-2) == "px" then
-    r = tonumber(r:sub(1, -3))
-  elseif type(r) == "string" then
-    r = tonumber(r)
-  end
-
-  return r
-end
+local eval_units = require "app.gui.eval_units"
+local View = require "app.gui.view"
 
 function ShelfView(style, children)
   local self = { }
@@ -18,7 +7,7 @@ function ShelfView(style, children)
   children = children or style or {}
 
   self.draw = function(self, w, h)
-    local gap = style.gap or 0
+    local gap = eval_units(style.gap, w) or 0
     local widths = style.widths or { }
 
     local total_gaps = gap * (#children - 1)
@@ -44,7 +33,7 @@ function ShelfView(style, children)
     love.graphics.pop()
   end
 
-  return self
+  return View(style, { self })
 end
 
 return ShelfView

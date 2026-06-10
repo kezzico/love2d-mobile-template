@@ -1,14 +1,21 @@
+local eval_units = require "app.gui.eval_units"
+
 function View(style, children)
   style = style or {}
-  children = children or style or {}
+  children = children or style or { }
   local frame = { x = 0, y = 0, w = 0, h = 0 }
 
   return {
     draw = function(self, w, h)
-      local padding = style.padding or { 0, 0 }
       local border_width = style.border and style.border.width or 0
-      local total_padding_x = (type(padding) == "number" and padding or padding[2] or 0) + border_width
-      local total_padding_y = (type(padding) == "number" and padding or padding[1] or 0) + border_width
+
+      local padding = style.padding or { 0, 0 }
+      local total_padding_x = eval_units((type(padding) == "table" and padding[2] or padding or 0), w) + border_width
+      local total_padding_y = eval_units((type(padding) == "table" and padding[1] or padding or 0), h) + border_width
+
+      local offset = style.offset
+      local offset_x = eval_units((type(offset) == "table" and offset[2] or offset or 0), w)
+      local offset_y = eval_units((type(offset) == "table" and offset[1] or offset or 0), h)
 
       if style.backgroundColor then
         love.graphics.push("all")
@@ -26,6 +33,8 @@ function View(style, children)
       end
 
       love.graphics.push()
+      -- print("view",offset_x, offset_y)
+      love.graphics.translate(offset_x, offset_y)
       love.graphics.translate(total_padding_x, total_padding_y)
 
       -- for _, child in ipairs(children) do

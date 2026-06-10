@@ -44,8 +44,10 @@ end
 
 function reduce(tbl, reducer)
   local s = 0
-  for i = 1, #tbl do
-    s = reducer(s, tbl[i], i)
+  -- using pairs here so that nil entries in the table won't truncate the loop
+  -- side effect: named table entries will be included in the loop, so filter for numbers only
+  for i, row in pairs(tbl) do
+    if type(i) == 'number' then s = reducer(s, tbl[i], i) end
   end
 
   return s
@@ -82,4 +84,24 @@ function filter(tbl, filter_func)
   return ftbl
 end
 
+function forEachCell(grid, fn)
+    for x, column in ipairs(grid) do
+        for y, cell in ipairs(column) do
+            fn(cell, x, y)
+        end
+    end
+end
 -- Example usage:
+return {
+    forEach = forEach,
+    forEachPair = forEachPair,
+    map = map,
+    appendTable = appendTable,
+    flatten = flatten,
+    reduce = reduce,
+    ternary = ternary,
+    count = count,
+    filter = filter,
+    forEachCell = forEachCell
+
+}

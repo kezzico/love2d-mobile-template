@@ -5,6 +5,10 @@ local function Clickable(onclick, children)
 
 	return {
     id = "heybar",
+    get_frame = function()
+      return frame
+    end,
+    
     onpress = function() 
       pressed = true
     end,

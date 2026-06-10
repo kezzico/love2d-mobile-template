@@ -15,43 +15,7 @@ if [ -f .env ]; then
   echo "Loading environment variables from .env"
   source .env
 else
-  echo "No .env file found. You can create one to set Android signing credentials and app ID."
-fi
-
-if [ ! -d "android" ]; then
-  echo "Android directory not found. Cloning from main branch..."
-  git clone --branch main --recurse-submodules https://github.com/love2d/love-android android
-  # git clone https://github.com/love2d/love-android android
-  # pushd android
-  # git fetch --tags
-  # git checkout 12.x
-  git submodule sync --recursive
-  git submodule update --init --force --recursive  
-  # popd
-fi
-
-# Create dist directory
-rm -rf dist
-mkdir -p dist
-
-# Compile all Lua files with LuaJIT
-for lua_file in *.lua; do
-    cp "$lua_file" "dist/$lua_file"  # Copy conf.lua as-is
-    cp -r assets "dist/assets"  # Copy assets directory
-    cp -r app "dist/app"  # Copy app directory
-done
-
-# Copy assets directory
-cp -r assets dist/
-rm -rf android/app/src/embed/assets/*
-# mkdir -p android/app/src/embed/assets/
-cp -r dist/ android/app/src/embed/assets/
-
-# Check for keystore and create one if not found
-pushd android
-if [ ! -f "release.keystore" ]; then
-  echo "Creating keystore..."
-  echo "Keystore not found. Setting up Android signing credentials..."
+  echo "No .env file found."
   read -p "Enter Android Key Alias (default: key0): " ANDROID_KEY_ALIAS
   ANDROID_KEY_ALIAS=${ANDROID_KEY_ALIAS:-key0}
 
@@ -73,13 +37,50 @@ if [ ! -f "release.keystore" ]; then
   ANDROID_APP_ID=$ANDROID_APP_ID
 EOF
 # ^^^ make sure this EOF stays at the start of the line
+fi
+
+if [ ! -d "android" ]; then
+  echo "Android directory not found. Cloning from main branch..."
+  git clone --branch main --recurse-submodules https://github.com/love2d/love-android android
+  # git clone https://github.com/love2d/love-android android
+  # pushd android
+  # git fetch --tags
+  # git checkout 12.x
+  git submodule sync --recursive
+  git submodule update --init --force --recursive  
+  # popd
+fi
+
+# Create dist directory
+rm -rf dist
+mkdir -p dist
+
+# Compile all Lua files with LuaJIT
+find . -name "*.lua" -type f | while read lua_file; do
+  mkdir -p "dist/$(dirname "$lua_file")"
+  cp "$lua_file" "dist/$lua_file"
+done
+if [ -d "assets" ]; then
+  cp -r assets "dist/assets"
+fi
+
+# Copy assets directory
+cp -r assets dist/
+rm -rf android/app/src/embed/assets/*
+cp -r dist/ android/app/src/embed/assets/
+
+# Check for keystore and create one if not found
+pushd android
+if [ ! -f "release.keystore" ]; then
+  echo "Creating keystore..."
+  echo "Keystore not found. Setting up Android signing credentials..."
 
   keytool -genkey -v -keystore release.keystore -keyalg RSA -keysize 2048 -validity 10000 \
     -alias "$ANDROID_KEY_ALIAS" -storepass "$ANDROID_KEYSTORE_PASSWORD" -keypass "$ANDROID_KEY_PASSWORD" \
     -dname "CN=Rat Game, O=Game, C=US"
 fi
 
-if [ ! -z "$ANDROID_APP_ID" ]; then
+if [ ! -z "${ANDROID_APP_ID:-}" ]; then
   echo "Using ANDROID_APP_ID from .env: $ANDROID_APP_ID"
   sed -i '' "s/^app.application_id=.*/app.application_id=$ANDROID_APP_ID/" gradle.properties
 fi

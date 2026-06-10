@@ -1,4 +1,4 @@
-function Navigator(rootView)
+local function Navigator(rootView)
   local stack = {}
     
   return {
@@ -17,9 +17,6 @@ function Navigator(rootView)
       if new_top ~= nil and new_top.activate then
         new_top:activate()
       end
-
-      -- controllers[1].delegate = new_top
-      -- controllers[2].delegate = new_top
     end,
 
     push = function(self, destination)
@@ -34,10 +31,6 @@ function Navigator(rootView)
       if destination.activate then
         destination:activate()
       end
-
-      -- for i = 1, #controllers do
-        -- controllers[i].delegate = destination
-      -- end
     end,
     
     pop = function(self)
@@ -53,18 +46,12 @@ function Navigator(rootView)
       if new_top ~= nil and new_top.activate then
         new_top:activate()
       end
-
-      -- controllers[1].delegate = new_top
-      -- controllers[2].delegate = new_top
     end,
     
     draw = function(self, w, h)
       if #stack > 0 then
         stack[#stack]:draw(w, h)
       end
-      -- for i=1,#stack do
-      --   stack[i]:draw(w, h)
-      -- end
     end
   }
 end

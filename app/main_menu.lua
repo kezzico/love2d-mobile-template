@@ -4,7 +4,7 @@ local ScrollView = require 'app.gui.scroll_view'
 local View = require 'app.gui.view'
 local StackView = require 'app.gui.stack_view'
 local ShelfView = require 'app.gui.shelf_view'
-local Buttons = require 'app.gui.buttons'
+local Button = require 'app.gui.button'
 local GameView = require 'app.game_view'
 local generateMaze = require 'app.game_logic.maze_generator'
 
@@ -30,10 +30,10 @@ local function MainMenu()
         ShelfView {
           gap = 11,
           widths = { "40%", nil },
-          Buttons.Primary("PLAY", function()
+          Button("PLAY", function()
             game_state.pause = false
           end),
-          Buttons.Secondary("RANDOM", function()
+          Button("RANDOM", function()
             game_state.maze = generateMaze(24, 24)
           end)          
         },
