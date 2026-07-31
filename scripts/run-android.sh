@@ -30,11 +30,11 @@ else
   read -p "Enter Android App ID (default: org.love2d.game): " ANDROID_APP_ID
   ANDROID_APP_ID=${ANDROID_APP_ID:-org.love2d.game}
 
-  cat >> ../.env << EOF
-  ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS
-  ANDROID_KEYSTORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD
-  ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD
-  ANDROID_APP_ID=$ANDROID_APP_ID
+  cat >> .env << EOF
+ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS
+ANDROID_KEYSTORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD
+ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD
+ANDROID_APP_ID=$ANDROID_APP_ID
 EOF
 # ^^^ make sure this EOF stays at the start of the line
 fi
@@ -55,9 +55,17 @@ fi
 rm -rf dist
 mkdir -p dist
 
+echo "bundle love game source code and assets..."
 # Compile all Lua files with LuaJIT
-find . -name "*.lua" -type f | while read lua_file; do
+find . -name "*.lua" -type f -not -path "./android/*" | while read lua_file; do
   mkdir -p "dist/$(dirname "$lua_file")"
+    #   if [ "$lua_file" != "conf.lua" ]; then  # Skip conf.lua as it's a special case
+    #     echo "Compiling $lua_file..."
+    #     luajit -b "$lua_file" "dist/${lua_file%.lua}.lua"
+    # else
+    #     cp "$lua_file" "dist/$lua_file"  # Copy conf.lua as-is
+    # fi
+
   cp "$lua_file" "dist/$lua_file"
 done
 if [ -d "assets" ]; then
@@ -69,6 +77,7 @@ cp -r assets dist/
 rm -rf android/app/src/embed/assets/*
 cp -r dist/ android/app/src/embed/assets/
 
+echo "building for Android with latest Löve bundle..."
 # Check for keystore and create one if not found
 pushd android
 if [ ! -f "release.keystore" ]; then
@@ -92,13 +101,37 @@ fi
   -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD" \
   --rerun-tasks
 
+echo "Using APK at app/build/outputs/apk/embedNoRecord/release/app-embed-noRecord-release.apk"
+
+# Install APK with retry loop
+while true; do
+  DEVICE=$(adb devices | grep -v attached | head -1 | awk '{print $1}')
+  echo "installing to $DEVICE"
+  if adb -s $DEVICE install -r app/build/outputs/apk/embedNoRecord/release/app-embed-noRecord-release.apk; then
+    echo "Installation successful. Starting app and showing logs..."
+    adb -s "$DEVICE" shell am start -n "$ANDROID_APP_ID/org.love2d.android.GameActivity"
+    # adb -s "$DEVICE" logcat | grep "$ANDROID_APP_ID"
+    adb -s "$DEVICE" logcat -c
+    adb -s "$DEVICE" logcat |
+      grep -E "$ANDROID_APP_ID|Vulkan|SDL/APP"
+    # adb -s "$DEVICE" logcat -c
+    # adb -s "$DEVICE" logcat -v threadtime
+    break
+  else
+    read -p "Installation failed. Try again? (y/n): " retry
+    if [[ "$retry" != "y" ]]; then
+      exit 1
+    fi
+  fi
+done
+
   # Check if app is installed before uninstalling
-if adb shell pm list packages | grep -q "^package:$ANDROID_APP_ID$"; then
-  adb uninstall $ANDROID_APP_ID
-fi
+# if adb shell pm list packages | grep -q "^package:$ANDROID_APP_ID$"; then
+#   adb uninstall $ANDROID_APP_ID
+# fi
 
 
-adb -s $(adb devices | grep -v attached | head -1 | awk '{print $1}') install -r app/build/outputs/apk/embedNoRecord/release/app-embed-noRecord-release.apk
+# adb -s $(adb devices | grep -v attached | head -1 | awk '{print $1}') install -r app/build/outputs/apk/embedNoRecord/release/app-embed-noRecord-release.apk
 
-adb shell am start -n $ANDROID_APP_ID/org.love2d.android.GameActivity
+# adb shell am start -n $ANDROID_APP_ID/org.love2d.android.GameActivity
 popd
