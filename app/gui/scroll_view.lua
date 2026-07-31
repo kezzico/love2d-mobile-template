@@ -1,36 +1,22 @@
-    -- local scroll_example = ScrollView(scroll_state, function(scrollview, score, index)
-    --     local cell = scrollview:dequeue_cell("example_cell")
+    -- local score_scroll = ScrollView(scroll_state, function(scrollview, score, index)
+    --     local cell = scrollview:dequeue_cell("score_cell")
 
     --     if cell == nil then
-    --         cell = ExampleCell()
+    --         cell = ScoreCell()
     --     end
 
-    --     cell.state.text = "ejemplo"
+    --     cell.state.score.text = formatScore(score.score)
+    --     cell.state.initials.text = score.initials
 
-    --     return cell            
+    --     return cell
     -- end)
-
--- local function ExampleCell()
---     local self = { }
-
---     self.reuseIdentifier = "example_cell"
-
---     self.state = {
---         text = "",
---     }
-
---     local view = TextView(self.state)
-
---     self.draw = function(self, w, h)
---         view:draw(w, h)
---     end
-
---     return self
--- end
 
 local function ScrollView(scroll_state, cellForRow) 
   local frame = { x = 0, y = 0, w = 0, h = 0 }
 
+  scroll_state = scroll_state or { }
+  scroll_state.items = scroll_state.items or { }
+  scroll_state.heights = scroll_state.heights or { 80 }
   scroll_state.offset = scroll_state.offset or 0
   scroll_state.velocity = scroll_state.velocity or 0
   scroll_state.height = 0
@@ -38,7 +24,10 @@ local function ScrollView(scroll_state, cellForRow)
   local cell_queue = { }
 
   return {
+    id = "scroll_view",
+    
     dequeue_cell = function(self, reuseIdentifier)
+      -- TODO: actually dequeue cell with matching reuse identifier
       if #cell_queue > 0 then
         local cell = table.remove(cell_queue, 1)
         return cell
@@ -95,7 +84,10 @@ local function ScrollView(scroll_state, cellForRow)
       local child_height = scroll_state.heights[1]
       scroll_state.height = math.max(child_height * #scroll_state.items - h, 0)
 
+      -- TODO: actually sum all heights to get start_index
       local start_index = math.max(1, math.floor(scroll_state.offset / child_height) + 1)
+
+      -- TODO: continue to sum heights until reaching 'h'
       local end_index = math.min(math.ceil((scroll_state.offset + h) / child_height), #scroll_state.items)
       
       -- recycle cells for best scroll performance
@@ -117,8 +109,8 @@ local function ScrollView(scroll_state, cellForRow)
 
       cell_queue = cells_for_reuse
 
-      -- table.insert(clickables, self)
-      table.insert(draggables, self)
+      table.insert(clickables, self)
+      -- table.insert(draggables, self)
       table.insert(updateables, self)
     end
   }
