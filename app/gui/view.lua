@@ -1,6 +1,6 @@
-local eval_units = require "app.gui.eval_units"
+local eval_units = require("app.gui.eval_units")
 
-function View(style, children)
+local function View(style, children)
   style = style or {}
   children = children or style or { }
   local frame = { x = 0, y = 0, w = 0, h = 0 }
@@ -16,6 +16,9 @@ function View(style, children)
       local offset = style.offset
       local offset_x = eval_units((type(offset) == "table" and offset[2] or offset or 0), w)
       local offset_y = eval_units((type(offset) == "table" and offset[1] or offset or 0), h)
+
+      love.graphics.push()
+      love.graphics.translate(offset_x, offset_y)
 
       if style.backgroundColor then
         love.graphics.push("all")
@@ -33,15 +36,13 @@ function View(style, children)
       end
 
       love.graphics.push()
-      -- print("view",offset_x, offset_y)
-      love.graphics.translate(offset_x, offset_y)
       love.graphics.translate(total_padding_x, total_padding_y)
 
-      -- for _, child in ipairs(children) do
       for i = 1, #children do
         local child = children[i]
         child:draw(w - total_padding_x * 2, h - total_padding_y * 2)
       end
+      love.graphics.pop()
       love.graphics.pop()
 
       return w, h
