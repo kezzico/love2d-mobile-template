@@ -10,8 +10,8 @@ function Cache()
 			local font = font_cache[key]
 
 			if font == nil then
-				print("load font "..key)
-				font = love.graphics.newFont(fontname[1], fontname[2])
+				-- print("load font "..key)
+				font = love.graphics.newFont(fontname[1], fontsize, "none")
 
 				font_cache[key] = font
 			end
@@ -42,16 +42,8 @@ function Cache()
 			local image = image_cache[key]
 
 			if image == nil then
-				local success, result = pcall(function()
-					image = love.graphics.newImage(key, { })
-				end)
-				if not success then
-					print("Failed to load image: " .. result)
-					error("Failed to load image: " .. result)
-					return nil
-				end
-				-- image = love.graphics.newImage(key, { })
-				
+				image = love.graphics.newImage(key, { })
+
 				image_cache[key] = image
 			end
 
@@ -85,3 +77,5 @@ function Cache()
 		end
 	}
 end
+
+return Cache
