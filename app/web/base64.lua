@@ -1,4 +1,4 @@
-local function base64_encode_str(str)
+local function encode_str(str)
     local b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
     return ((str:gsub('.', function(x) 
         local r,b='',x:byte()
@@ -12,7 +12,7 @@ local function base64_encode_str(str)
     end)..({ '', '==', '=' })[#str%3+1])
 end
 
-local function base64_decode_png(b64)
+local function decode_png(b64)
     b64 = b64:match("^data:image/png;base64,(.+)$") or b64
 
     local success, image_or_message = pcall(function()
@@ -40,6 +40,6 @@ local function base64_decode_png(b64)
 end
 
 return {
-    decode_png = base64_decode_png,
-    encode_str = base64_encode_str
+    decode_png = decode_png,
+    encode_str = encode_str
 }

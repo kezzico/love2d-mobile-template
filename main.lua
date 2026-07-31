@@ -1,8 +1,7 @@
 -- base
 require 'app.util.table_to_string'
-require 'app.util.table_count'
-require 'app.util.foreach'
-require 'app.util.random'
+require 'app.util.functional_essentials'
+require 'app.util.lua_extensions'
 require 'app.util.cache'
 require 'app.util.hex_to_color'
 
@@ -10,7 +9,6 @@ require 'app.util.hex_to_color'
 cache = Cache()
 
 -- web
--- require 'app.web.base64'
 local httpclient = require 'app.web.http_client'
 
 local MainMenu = require 'app.main_menu'
