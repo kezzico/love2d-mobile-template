@@ -1,5 +1,5 @@
-local eval_units = require "app.gui.eval_units"
-local View = require "app.gui.view"
+local eval_units = require("app.gui.eval_units")
+local View = require("app.gui.view")
 
 local function StackView(style, children)
   local self = { }
@@ -23,16 +23,15 @@ local function StackView(style, children)
     local count_needy_children = reduce(children, function(s, r, index) 
       return s + ternary(heights[index] == nil, 1, 0) 
     end)
--- print("needy children", count_needy_children)      
+-- print("needy children", count_needy_children)
     love.graphics.push()
     for i=1,#children do
-      local cell_height = eval_units(heights[i], height_minus_gaps) or (height_budget / count_needy_children)
+      local cell_height = eval_units(heights[i], height_minus_gaps) or eval_units(style.all_heights, h) or (height_budget / count_needy_children)
       local child = children[i]
 
       -- some how the height budget is 620, when I need 180+44 for static cells... expected 576
 -- local lx, ly = love.graphics.transformPoint(0, 0)
 -- print(ly, cell_height)
-
       child:draw(w, cell_height)
       love.graphics.translate(0, cell_height)
       love.graphics.translate(0, gap)
