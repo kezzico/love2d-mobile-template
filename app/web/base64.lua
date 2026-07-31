@@ -1,4 +1,4 @@
-function base64_encode_str(str)
+local function base64_encode_str(str)
     local b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
     return ((str:gsub('.', function(x) 
         local r,b='',x:byte()
@@ -12,7 +12,9 @@ function base64_encode_str(str)
     end)..({ '', '==', '=' })[#str%3+1])
 end
 
-function base64_decode_png(b64)
+local function base64_decode_png(b64)
+    b64 = b64:match("^data:image/png;base64,(.+)$") or b64
+
     local success, image_or_message = pcall(function()
         -- 1. base64 → raw bytes
         local raw = love.data.decode("string", "base64", b64)
@@ -36,3 +38,8 @@ function base64_decode_png(b64)
     return image_or_message
 
 end
+
+return {
+    decode_png = base64_decode_png,
+    encode_str = base64_encode_str
+}

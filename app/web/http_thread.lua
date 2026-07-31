@@ -18,12 +18,14 @@ while rq ~= "quit" do
         data = rq_body,
     })
 
-    -- print("HTTP request to: " .. url)
-    -- print("HTTP request method: " .. rq_method)
-    -- print("HTTP request body: " .. tostring(rq_body))
-    
-    -- print("HTTP response code: " .. tostring(code))
-    -- print("HTTP response body: " .. tostring(body))
+    print("[HTTP] response", url, code)
+    -- 200 ok for resources that that are cached is normal
+    -- 0 code means no connection
+    -- HTTP BODY! >>   https://analytics.kezzi.co/pixel.jpg?ctm=doomtruck/game_start   0
+    -- HTTP BODY! >>   https://dev.kezzi.co/ads        0
+    -- HTTP BODY! >>   https://kezzico-bucket.sfo2.digitaloceanspaces.com/ads.kezzi.co/ad_advertise_survive.jpg        200
+    -- HTTP BODY! >>   https://kezzico-bucket.sfo2.digitaloceanspaces.com/ads.kezzi.co/ad_pair_code.jpg        200
+
     response_channel:push({
         id = rq_id,
         code = code,
