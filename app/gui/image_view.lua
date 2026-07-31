@@ -27,7 +27,7 @@ function ImageView(path, style)
 			local oy = 0
 
 			if style.align == "center" then
-				oy = center_x
+				oy = center_y
 			elseif style.align == "bottom" then
 				oy = h - (self.native_height * sy)
 			end
