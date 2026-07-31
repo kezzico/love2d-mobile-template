@@ -1,7 +1,7 @@
-local eval_units = require "app.gui.eval_units"
-local View = require "app.gui.view"
+local eval_units = require("app.gui.eval_units")
+local View = require("app.gui.view")
 
-function ShelfView(style, children)
+local function ShelfView(style, children)
   local self = { }
   style = style or { widths = { }, gap = 0 }
   children = children or style or {}
