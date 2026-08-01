@@ -5,7 +5,13 @@ function Cache()
 	
 	return {
 		font = function(fontname)
-			local key = fontname[1]..','..fontname[2]
+			if fontname == nil or fontname[1] == nil then
+				return nil
+			end
+
+			local fontsize = fontname[2] or 120
+
+			local key = fontname[1]..','..fontsize
 
 			local font = font_cache[key]
 
