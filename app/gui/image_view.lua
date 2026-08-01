@@ -1,4 +1,4 @@
-function ImageView(path, style)
+local function ImageView(path, style)
 	style = style or { aspect = "fit" }
 	local image = cache.image(path)
 
