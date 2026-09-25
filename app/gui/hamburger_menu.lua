@@ -3,8 +3,6 @@ local styles = require("app.styles")
 local HamburgerButton = require("app.gui.hamburger_button")
 local eval_units = require("app.gui.eval_units")
 
-local ClickBlocker = require("app.gui.click_blocker")
-
 local function HamburgerMenu(style_menu_main, menu, main_view)
     menu = menu or style_menu_main[1]
     main_view = main_view or style_menu_main[2]
@@ -24,8 +22,6 @@ local function HamburgerMenu(style_menu_main, menu, main_view)
         menu_width = eval_units(style.width, love.graphics.getWidth( )),
         last_drag_time = 0
     }
-
-    local click_blocker = ClickBlocker()
 
     local button = HamburgerButton(function()
         if state.offset_x > 0 then
@@ -125,7 +121,10 @@ local function HamburgerMenu(style_menu_main, menu, main_view)
         love.graphics.setColor(style.backgroundColor)
         love.graphics.rectangle("fill", -state.offset_x, 0, state.menu_width + state.offset_x, h)
         love.graphics.pop()
-        click_blocker:draw(state.menu_width, h)
+
+        if state.offset_x > 0 then
+            clickables = { }
+        end
 
         -- table.insert(draggables, self)
         table.insert(clickables, self)
