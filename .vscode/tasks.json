@@ -16,13 +16,23 @@
     {
       "label": "run on android device",
       "type": "shell",
-      "command": "scripts/run-android.sh",
+      "command": "ml2d/scripts/run-android.sh",
       "problemMatcher": [],
       "group": {
         "kind": "build",
         "isDefault": true
       }
     },
+    {
+      "label": "build android release",
+      "type": "shell",
+      "command": "ml2d/scripts/release-android.sh",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },    
 
   ]
 }
