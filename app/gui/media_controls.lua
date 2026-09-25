@@ -1,6 +1,6 @@
 local Clickable = require "app.gui.clickable"
 
-local function AudioPlayButton(state, onclick)
+local function MediaPlayButton(state, onclick)
     local self = { }
 
     local clickable = Clickable(function()
@@ -30,7 +30,7 @@ local function AudioPlayButton(state, onclick)
 
     return self
 end
-local function AudioPrevButton(onclick)
+local function MediaPrevButton(onclick)
     local self = { }
 
     local clickable = Clickable(onclick)
@@ -54,7 +54,7 @@ local function AudioPrevButton(onclick)
 
     return self
 end
-local function AudioNextButton(onclick)
+local function MediaNextButton(onclick)
     local self = { }
 
     local clickable = Clickable(onclick)
@@ -80,7 +80,7 @@ local function AudioNextButton(onclick)
 end
 
 return {
-    PlayButton = AudioPlayButton,
-    NextButton = AudioNextButton,
-    PrevButton = AudioPrevButton
+    PlayButton = MediaPlayButton,
+    NextButton = MediaNextButton,
+    PrevButton = MediaPrevButton
 }
