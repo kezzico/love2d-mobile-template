@@ -36,7 +36,8 @@ return {
     },
 
     fonts = {
-        joystix = cache.font({"assets/fonts/joystix.ttf"})
+        joystix = cache.font({"assets/fonts/joystix.ttf"}),
+        default = cache.font({"assets/fonts/joystix.ttf"})
     },
 
     music = {
