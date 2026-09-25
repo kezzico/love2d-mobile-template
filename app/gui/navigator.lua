@@ -1,5 +1,3 @@
-local ClickBlocker = require("app.gui.click_blocker")
-
 local function Navigator(stack)
   local stack = stack or {}
   local style = {}
@@ -10,8 +8,6 @@ local function Navigator(stack)
   state.dragging = false
   state.offset_x = 0
   state.velocity = 0
-
-  local click_blocker = ClickBlocker()
 
   return {
     id = "navigator",
@@ -78,6 +74,12 @@ local function Navigator(stack)
       state.dragging = false
     end,
 
+    onkeydown = function(self, key)
+      if key == "escape" then
+        if navigator:peek() > 0 then navigator:pop() end
+      end
+    end,
+
     update = function(self, dt)
         state.offset_x = math.max(0, state.offset_x)
 
@@ -116,14 +118,15 @@ local function Navigator(stack)
         if state.offset_x > 0 then
           love.graphics.setScissor(0, 0, state.offset_x+2, h)
           stack[#stack-1]:draw(w, h)
-          click_blocker:draw(w, h)
           love.graphics.setScissor()
-          -- love.graphics.pop()
         end
-
+        -- block clicks / key events for underlying elements
+        clickables = { }
+        keyables = { }
+        
         table.insert(clickables, self)
-        table.insert(draggables, self)
         table.insert(updateables, self)
+        table.insert(keyables, self)
 
         love.graphics.push()
         love.graphics.translate(state.offset_x, 0)

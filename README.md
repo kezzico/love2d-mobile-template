@@ -4,6 +4,32 @@ Build mobile apps and games using the **LÖVE 2D** – a powerful, lightweight L
 
 See [Love2d.org](https://www.love2d.org) for more info.
 
+## Example usage
+
+
+
+## Design Philosophy
+
+*If it's not drawing, it stays quiet.*
+
+During the draw cycle, drawables add themselves to the **clickables** or **updateables** table. The table is cleared at the beginning of every draw frame. Therefore, any drawable that wants to receive update events must re-insert itself into the **updateables** table during each draw call.
+
+Similarly, any drawable that wants to receive drag/press/release/click events must re-insert itself into the **clickables** table during each draw call.
+
+*State
+
+example
+```lua
+local self = { }
+self.update = function(self, dt)
+  -- not called unless self is inserted to updateables during draw
+end
+
+self.draw = function(self, w, h)
+  table.insert(updateables, self)
+end
+```
+
 ## Requirements
 
 - Love2d version 12.0 installed in your system path as `love`

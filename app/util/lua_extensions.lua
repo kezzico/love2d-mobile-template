@@ -41,6 +41,15 @@ function table.clone(orig)
     return copy
 end
 
+function table.contains(table, element)
+  for _, value in pairs(table) do
+    if value == element then
+      return true
+    end
+  end
+  return false
+end
+
 -- split a string by a separator
 -- @param str string
 -- @param sep string

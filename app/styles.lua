@@ -48,6 +48,10 @@ return {
         secondary = { color = blue, backgroundColor = white, size = 14 },
     },
 
+    clickables = {
+        backgroundColor = hexToColor(0xFFFFFF, 0.5)
+    },
+
     sliders = { 
         blue = { color = blue, backgroundColor = hexToColor(0x444444) },
         red = { color = red, backgroundColor = hexToColor(0x444444) }

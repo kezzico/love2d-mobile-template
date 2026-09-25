@@ -1,3 +1,44 @@
+----------------------------------------------------------------------
+-- Love2D Mobile Template
+-- app/gui/View.lua
+--
+-- Reactive view drawable.
+-- Provides a container for child drawables that can reactively update its layout and appearance.
+--
+-- Copyright (c) 2026 Lee Irvine
+-- Licensed under the MIT License.
+
+----------------------------------------------------------------------
+-- View(style, children)
+--
+-- View drawable that can draw a background, border, and child 
+-- drawables with padding and offset handling.
+--
+-- Parameters:
+--   style  - table of layout and appearance options:
+--            backgroundColor: color used for the view fill
+--            border: table containing color and width
+--            padding: number or {top, left} padding values
+--            offset: number or {top, left} offset values
+--   children - array of child drawables, each implementing :draw(width, height)
+--
+-- Returns:
+--   a table with a draw(self, width, height) method.
+
+-- Usage example:
+-- local view = View {
+--   backgroundColor = {1, 0, 0, 1},
+--   border = { color = {0, 0, 0, 1}, width = 2 },
+--   padding = {10, 10},
+--   offset = {5, 5},
+--   View { }, View { }
+-- } 
+-- OR --
+-- local view = View(
+--   { backgroundColor = hexToColor(0xFF0000, 1.0) }, -- style
+--   { View { }, View { } }) -- children
+
+
 local eval_units = require("app.gui.eval_units")
 
 local function View(style, children)

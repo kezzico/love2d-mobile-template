@@ -1,3 +1,26 @@
+-- Love2D Mobile Template
+-- app/gui/ShelfView.lua
+--
+-- Reactive shelf view drawable.
+-- Provides a horizontal shelf layout for child drawables with configurable widths and gaps.
+--
+-- Copyright (c) 2026 Lee Irvine
+-- Licensed under the MIT License.
+----------------------------------------------------------------------
+-- ShelfView(style, children)
+--
+-- Shelf view drawable that arranges child drawables horizontally with optional widths and gaps.
+--
+-- Parameters:
+--   style - table containing layout options:
+--            widths: array of widths for each child (can be nil for flexible sizing)
+--            gap: number specifying the gap between children
+--   children - array of child drawables, each implementing :draw(width, height)
+--
+-- Returns:
+--   a View containing the shelf view drawable.
+----------------------------------------------------------------------
+
 local eval_units = require("app.gui.eval_units")
 local View = require("app.gui.view")
 

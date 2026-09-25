@@ -1,3 +1,30 @@
+-- Love2D Mobile Template
+-- app/gui/StackView.lua
+--
+-- Reactive stack view drawable.
+-- Provides a vertical stack layout for child drawables with configurable heights and gaps.
+--
+-- Copyright (c) 2026 Lee Irvine
+-- Licensed under the MIT License.
+
+----------------------------------------------------------------------
+-- StackView(style, children)
+--
+-- Stack view drawable that arranges child drawables vertically with optional heights and gaps.
+--
+-- Parameters:
+--   style - table containing layout options:
+--            heights: array of heights for each child (can be nil for flexible sizing)
+--            gap: number specifying the gap between children
+--   children - array of child drawables, each implementing :draw(width, height)
+--
+-- Returns:
+--   a View containing the stack view drawable.
+-- Usage example:
+-- local stackView = StackView({ heights = { 100, nil, 50 }, gap = 10 }, { child1, child2, child3 })
+----------------------------------------------------------------------
+
+
 local eval_units = require("app.gui.eval_units")
 local View = require("app.gui.view")
 

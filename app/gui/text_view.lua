@@ -1,3 +1,29 @@
+----------------------------------------------------------------------
+-- Love2D Mobile Template
+-- app/gui/View.lua
+--
+-- Reactive view drawable.
+-- Provides a container for child drawables that can reactively update its layout and appearance.
+--
+-- Copyright (c) 2026 Lee Irvine
+-- Licensed under the MIT License.
+
+----------------------------------------------------------------------
+-- TextView(text_state_or_text, style)
+--
+-- Text view drawable that displays text with alignment, justification, and styling options.
+--
+-- Parameters:
+--   text_state_or_text - string, number, or table containing text and optional styling information
+--   style - table containing style overrides for the text view
+--
+-- Returns:
+--   a View containing the text view drawable.
+-- Usage example:
+-- local textView = TextView("Hello World", { color = {1, 1, 1, 1}, size = 24 })
+-- local textView = TextView({ text = "Hello World", color = {1, 1, 1, 1}, size = 24 })
+-- local textView = TextView("Hello World")
+
 local styles = require "app.styles"
 local View = require("app.gui.view")
 
@@ -15,12 +41,6 @@ local function TextView(text_state_or_text, style)
     text_state = text_state_or_text
     text_state.text = text_state.text or ""
   end
-
-  -- text_state.color = style.color or text_state.color or hexToColor(0xFFFFFF)
-  -- text_state.font = style.font or text_state.font or cache.font({"assets/fonts/joystix.ttf", 120})
-  -- text_state.size = style.size or text_state.size or 30.0
-  -- text_state.align = style.align or text_state.align or "center"
-  -- text_state.justify = style.justify or text_state.justify or "center"
 
   self.draw = function(self, w, h)
       local font_scale = (text_state.size or style.size or 30.0) / 60.0
@@ -42,6 +62,8 @@ local function TextView(text_state_or_text, style)
       end
 
       -- using a large font and scaling it down to get better visual quality
+      -- there seems to be some side effects from doing this however.
+      -- certains fonts will display strange artifacts. 
       love.graphics.scale(font_scale, font_scale)
       love.graphics.setColor(text_color)
       love.graphics.setFont(font)
