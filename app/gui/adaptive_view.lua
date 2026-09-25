@@ -1,6 +1,6 @@
-local function AdaptiveView(children)
+local function AdaptiveView(state)
     local self = { }
-    local state = children or { }
+    local state = state or { }
     state.portrait = state.portrait or View { }
     state.landscape = state.landscape or View { }
 
