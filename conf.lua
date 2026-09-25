@@ -1,54 +1,43 @@
 function love.conf(t)
-  t.title = "Mobile Löve2d"
-  t.modules.joystick = true
-  t.modules.video = true
-  t.identity = "Mobile Löve2d"            -- The name of the save directory (string)
-  t.appendidentity = false            -- Search files in source directory before save directory (boolean)
-  t.version = "12.0"                  -- The LÖVE version this game was made for (string)
-  t.console = false                   -- Attach a console (boolean, Windows only)
-  t.accelerometerjoystick = true      -- Enable the accelerometer on iOS and Android by exposing it as a Joystick (boolean)
-  t.externalstorage = false           -- True to save files (and read from the save directory) in external storage on Android (boolean) 
-  t.graphics.gammacorrect = false              -- Enable gamma-correct rendering, when supported by the system (boolean)
+    -- local width = 320
+    -- local height = 640
+    local width = 800
+    local height = 400
 
-  t.audio.mic = false                 -- Request and use microphone capabilities in Android (boolean)
-  t.audio.mixwithsystem = true        -- Keep background music playing when opening LOVE (boolean, iOS and Android only)
-
-  t.window.title = "2D Studio"         -- The window title (string)
-  t.window.icon = nil                 -- Filepath to an image to use as the window's icon (string)
-  t.window.width = 1080/3                -- The window width (number)
-  t.window.height = 1920/3               -- The window height (number)
-  t.window.borderless = false         -- Remove all border visuals from the window (boolean)
-  t.window.resizable = true           -- Let the window be user-resizable (boolean)
-  t.window.minwidth = 1080/6               -- Minimum window width if the window is resizable (number)
-  t.window.minheight = 1920/6              -- Minimum window height if the window is resizable (number)
-  t.window.fullscreen = false         -- Enable fullscreen (boolean)
-  t.window.fullscreentype = "desktop" -- Choose between "desktop" fullscreen or "exclusive" fullscreen mode (string)
-  t.window.vsync = 1                  -- Vertical sync mode (number)
-  t.window.msaa = 0                   -- The number of samples to use with multi-sampled antialiasing (number)
-  t.window.depth = nil                -- The number of bits per sample in the depth buffer
-  t.window.stencil = nil              -- The number of bits per sample in the stencil buffer
-  t.displayIndex = 1                -- Index of the monitor to show the window in (number)
-  t.highdpi = true            -- Enable high-dpi mode for the window on a Retina display (boolean)
-  t.window.usedpiscale = true         -- Enable automatic DPI scaling when highdpi is set to true as well (boolean)
-  t.window.x = nil                    -- The x-coordinate of the window's position in the specified display (number)
-  t.window.y = nil                    -- The y-coordinate of the window's position in the specified display (number)
-
-  t.modules.audio = true              -- Enable the audio module (boolean)
-  t.modules.data = true               -- Enable the data module (boolean)
-  t.modules.event = true              -- Enable the event module (boolean)
-  t.modules.font = true               -- Enable the font module (boolean)
-  t.modules.graphics = true           -- Enable the graphics module (boolean)
-  t.modules.image = true              -- Enable the image module (boolean)
-  t.modules.joystick = true           -- Enable the joystick module (boolean)
-  t.modules.keyboard = true           -- Enable the keyboard module (boolean)
-  t.modules.math = true               -- Enable the math module (boolean)
-  t.modules.mouse = true              -- Enable the mouse module (boolean)
-  t.modules.physics = true            -- Enable the physics module (boolean)
-  t.modules.sound = true              -- Enable the sound module (boolean)
-  t.modules.system = true             -- Enable the system module (boolean)
-  t.modules.thread = true             -- Enable the thread module (boolean)
-  t.modules.timer = true              -- Enable the timer module (boolean), Disabling it will result 0 delta time in love.update
-  t.modules.touch = true              -- Enable the touch module (boolean)
-  t.modules.video = true              -- Enable the video module (boolean)
-  t.modules.window = true             -- Enable the window module (boolean)
+    -- TODO: correct the font scaling then crank msaa up to 4
+    t.window.msaa = 4 
+    t.window.title = "Doom Truck"
+    t.window.width = width
+    t.window.height = height
+    t.window.resizable = true
+    t.window.vsync = true
+    t.window.fullscreen = false
+    t.window.minwidth = width
+    t.window.minheight = height
+    
+    -- For mobile
+    t.window.fullscreentype = "desktop"
+    t.modules.joystick = true
+    t.modules.physics = true
+    
+    -- Enable only what we need
+    t.modules.audio = true
+    t.modules.data = true
+    t.modules.event = true
+    t.modules.font = true
+    t.modules.graphics = true
+    t.modules.image = true
+    t.modules.keyboard = true
+    t.modules.math = true
+    t.modules.mouse = true
+    t.modules.sound = true
+    t.modules.system = true
+    t.modules.thread = true
+    t.modules.timer = true
+    t.modules.touch = true
+    t.modules.video = false
+    t.modules.window = true
+    if love._os == "Android" then 
+        t.graphics.renderers = {"opengl"}
+    end    
 end

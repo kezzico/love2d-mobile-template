@@ -44,7 +44,11 @@ local function TextView(text_state_or_text, style)
 
   self.draw = function(self, w, h)
       local font_scale = (text_state.size or style.size or 30.0) / 60.0
-      local font = text_state.font or style.font or cache.font({"assets/fonts/joystix.ttf"})
+      local font = 
+        text_state.font or 
+        style.font or 
+        styles.fonts.default
+        cache.font({"assets/fonts/joystix.ttf"})
         
       local maxWidth, wrappedtext = font:getWrap( text_state.text, w / font_scale )
       local textWidth = maxWidth
@@ -79,7 +83,7 @@ local function TextView(text_state_or_text, style)
       love.graphics.pop()
     end
 
-    return View(text_state, { self })
+    return View(table.mush(text_state, style), { self })
 end
 
 return TextView
