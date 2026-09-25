@@ -50,6 +50,18 @@ function table.contains(table, element)
   return false
 end
 
+function table.mush(...)
+  local mush = { }
+  for _, tbl in ipairs({...}) do
+    if type(tbl) == 'table' then
+      for key, value in pairs(tbl) do
+        mush[key] = value
+      end
+    end
+  end
+  return mush
+end
+
 -- split a string by a separator
 -- @param str string
 -- @param sep string
@@ -81,17 +93,67 @@ function math.clamp(x, lower_bound, upper_bound)
     return x
 end
 
+function math.magnitude(v)
+  return math.sqrt(v[1]^2 + v[2]^2)
+end
+
+function math.distance(a, b)
+  return math.sqrt((b[1] - a[1])^2 + (b[2] - a[2])^2 )
+end
+
 -- pseudo-random number generator based on a seed and a string input
 -- @param seed string -- the seed for the pseudo-random number generator
 -- @param str hash -- different hashes generate different numbers
 -- @return number
 function math.prandom(seed, str)
   -- print(str)
-  local hash = love.data.hash( "sha256", seed..str )
+  local hash = love.data.hash( "string", "sha256", seed..str )
 
   local hex = love.data.encode("string", "hex", hash)
 
   local number = tonumber(hex:sub(1,8), 16)
   -- print(number)
   return number / 4294967295 -- 2^32
+end
+
+function math.random_color(mask)
+  mask = mask or 0xFFFFFF
+
+  -- Treat the mask as RGB channel flags and return Love2D-style normalized
+  -- color components. For example, 0xFF0000 produces a random red color.
+  local red = math.floor(mask / 0x10000) % 0x100
+  local green = math.floor(mask / 0x100) % 0x100
+  local blue = mask % 0x100
+
+  return {
+    red > 0 and math.random() or 0,
+    green > 0 and math.random() or 0,
+    blue > 0 and math.random() or 0
+  }
+end
+
+function math.displacement(p1, p2)
+  return { 
+    p2[1] - p1[1],
+    p2[2] - p1[2]
+  }
+end
+
+function math.sign(x)
+  if x > 0 then return 1 end
+  return -1
+end
+function math.cardinality(p)
+  if p[1] > 0 then return 1 end
+  return -1
+end
+function math.step(n, ...)
+  local p = 0
+  for _, x in ipairs({...}) do
+    if x <= n then
+      p = x
+    end
+  end
+
+  return p
 end
