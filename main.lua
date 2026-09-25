@@ -1,41 +1,55 @@
 -- base
 require 'app.util.table_to_string'
-require 'app.util.functional_essentials'
 require 'app.util.lua_extensions'
-require 'app.util.cache'
 require 'app.util.hex_to_color'
+require 'app.util.functional_essentials'
 
--- not sure about this caching thing...
-cache = Cache()
+-- cache
+cache = (require 'app.util.cache')()
 
 -- web
-local httpclient = require 'app.web.http_client'
+http_client = (require 'app.web.http_client')
 
-local MainMenu = require 'app.main_menu'
+-- navigator
+navigator = (require "app.gui.navigator")()
 
-local Navigator = require 'app.gui.navigator'
+-- local MainMenu = require 'app.main_menu'
 
-navigator = Navigator()
+-- local Navigator = require 'app.gui.navigator'
 
-function love.load()
-  navigator:push(MainMenu())
-end
+-- navigator = Navigator()
+
 
 -- on draw, add to these tables to receive events
-
 clickables = {}
 draggables = {}
 updateables = {}
+keyables = {}
 
-local n = 1
+function love.load()
+  local name, version, vendor, device = love.graphics.getRendererInfo()
+  print("System: ".. love.system.getOS())
+  print("Renderer: " .. name)
+  print("Version: " .. version)
+  print("Vendor: " .. vendor)
+  print("Device: " .. device)
+
+  math.randomseed(os.time())
+  
+  navigator:push((require('app.main_menu'))())
+end
+
 function love.draw()
   clickables = {}
   draggables = {}
   updateables = {}
+  keyables = {}
 
   local w, h = love.graphics.getDimensions()
   love.graphics.origin()
+  love.graphics.push("all")
   navigator:draw(w, h)
+  love.graphics.pop()
 end
 
 function love.quit()
@@ -44,61 +58,71 @@ function love.quit()
 end
 
 function love.update(dt)
-  httpclient:poll()
+  http_client:poll()
 
   for i, u in ipairs(updateables) do
     u:update(dt)
   end
 end
 
-local mouse_down = false
-local mouse_drag = false
-local mouse_delta = 0
+--------------------------------------
+----- INPUT INTEGRATION MODULE -------
+local ControlModule = require "app.control_module"
+local touch_handlers = { }
+local click_handler = ControlModule()
 
-function love.mousepressed(x, y, button, istouch, presses)
-  -- print("🐁 press the mouse down")
-  mouse_down = true
-  mouse_drag = false
+function love.touchpressed(id, x, y, dx, dy, pressure)
+  -- print("touch press", id, x, y, dx, dy, pressure)
+  touch_handlers[id] = touch_handlers[id] or ControlModule()
+  touch_handlers[id]:onpress(x, y)
+end
 
-  for i, clickable in ipairs(clickables) do
-    -- print("🐁 " .. table_to_string(clickable.id))
-    if clickable:hit(x, y) and clickable.onpress then
-      clickable:onpress(x, y)
-      return
-    end
-  end
+function love.touchmoved(id, x, y, dx, dy, pressure)
+  -- print("touch move", id, x, y, dx, dy, pressure)
+  touch_handlers[id] = touch_handlers[id] or ControlModule()
+  touch_handlers[id]:onmove(x, y, dx, dy)
+end
+
+function love.touchreleased(id, x, y, dx, dy, pressure)
+  -- print("touch release", id, x, y, dx, dy, pressure)
+  touch_handlers[id] = touch_handlers[id] or ControlModule()
+  touch_handlers[id]:onrelease(x, y)
+  touch_handlers[id] = nil
+end
+
+function love.mousepressed(x, y, button, istouch)
+  if istouch then return end
+  click_handler:onpress(x, y)
 end
 
 function love.mousemoved(x, y, dx, dy, istouch)
-  if mouse_down then
-    mouse_delta = mouse_delta + math.abs(dx) + math.abs(dy)
-  else
-    mouse_delta = 0
-  end
+  if istouch then return end
+  click_handler:onmove(x, y, dx, dy)
+end
 
-  if mouse_delta > 5 then
-    mouse_drag = true
-  end
+function love.mousereleased(x, y, button, istouch)
+  if istouch then return end
+  click_handler:onrelease(x, y)
+end
 
-  for i, draggable in ipairs(draggables) do
-    if draggable:hit(x, y) and mouse_down == true then
-      draggable:ondrag(dx, dy, x, y)
+function love.keypressed(key, scancode, isrepeat)
+  for i = #keyables, 1, -1 do
+    local k = keyables[i]
+    if k.onkeydown then
+      k:onkeydown(key)
     end
   end
 end
 
-function love.mousereleased(x, y, button, istouch, presses)
-  -- print("🐁 release the mouse")
-  mouse_down = false
-  for i = #clickables, 1, -1 do
-    local clickable = clickables[i]
-    -- print("🐁 " .. table_to_string(clickable.id))
-    if clickable:hit(x, y) and clickable.onclick and mouse_drag == false then
-      clickable:onclick(x, y)
-      return
-    elseif clickable.onrelease then
-      clickable:onrelease(x, y)
-      -- return
+function love.keyreleased(key, scancode)
+  for i = #keyables, 1, -1 do
+    local k = keyables[i]
+    if k.onkeyup then
+      k:onkeyup(key)
     end
   end
 end
+
+-----------------------------------------------------
+-----------------------------------------------------
+-----------------------------------------------------
