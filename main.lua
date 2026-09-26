@@ -1,26 +1,18 @@
 -- base
-require 'app.util.table_to_string'
-require 'app.util.lua_extensions'
-require 'app.util.hex_to_color'
-require 'app.util.functional_essentials'
+require 'ml2d.util.table_to_string'
+require 'ml2d.util.lua_extensions'
+require 'ml2d.util.hex_to_color'
+require 'ml2d.util.functional_essentials'
 
 -- cache
-cache = (require 'app.util.cache')()
+cache = (require 'ml2d.util.cache')()
 
 -- web
-http_client = (require 'app.web.http_client')
+http_client = (require 'ml2d.web.http_client')
 
 -- navigator
-navigator = (require "app.gui.navigator")()
+navigator = (require "ml2d.gui.navigator")()
 
--- local MainMenu = require 'app.main_menu'
-
--- local Navigator = require 'app.gui.navigator'
-
--- navigator = Navigator()
-
-
--- on draw, add to these tables to receive events
 clickables = {}
 draggables = {}
 updateables = {}
@@ -67,7 +59,7 @@ end
 
 --------------------------------------
 ----- INPUT INTEGRATION MODULE -------
-local ControlModule = require "app.control_module"
+local ControlModule = require "ml2d.control_module"
 local touch_handlers = { }
 local click_handler = ControlModule()
 
